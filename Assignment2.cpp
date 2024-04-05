@@ -6,6 +6,9 @@ int calculateSum(int a, int b) {
 
 int main()
 {
-    int n = calculateSum(0xfffffff0, 0xf);
+    int a, b;
+    scanf("%d", &a);
+    scanf("%d", &b);
+    int n = calculateSum(a, b);
     printf("The sum is %d\n", n);
 }
