@@ -1,41 +1,42 @@
 #include <iostream>
-#include <string>
 #include <cstring>
 #include <stdlib.h>
+#include <stdio.h>
 
-using namespace std;
-
-void processUser(string input) {
-    string command = "echo 'Processing user: " + input + "'";
-    system(command.c_str());  // CWE-78: Improper Neutralization of Special Elements used in an OS Command ('OS Command Injection')
+void processUser(char* input) {
+    char command[100];
+    sprintf(command, "echo 'Processing user: %s'", input);  // CWE-78: Improper Neutralization of Special Elements used in an OS Command ('OS Command Injection')
+    system(command);
 }
 
-void processQuery(string query) {
-    string sql = "SELECT * FROM users WHERE username = '" + query + "'";
-    // CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection')
-    cout << "Executing SQL: " << sql << endl;
+void processQuery(char* query) {
+    char sql[200];
+    sprintf(sql, "SELECT * FROM users WHERE username = '%s'", query);  // CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection')
+    printf("Executing SQL: %s\n", sql);
 }
 
 void processNumber(int number) {
     int array[10];
     array[number] = 42;  // CWE-120: Buffer Overflow
-    cout << "Number processed: " << number << endl;
+    printf("Number processed: %d\n", number);
 }
 
 int main() {
-    string userInput;
-    cout << "Enter a username: ";
-    getline(cin, userInput);
+    char userInput[100];
+    printf("Enter a username: ");
+    fgets(userInput, sizeof(userInput), stdin);
+    userInput[strcspn(userInput, "\n")] = '\0';  // Remove trailing newline
     processUser(userInput);
 
-    string query;
-    cout << "Enter a query: ";
-    getline(cin, query);
+    char query[100];
+    printf("Enter a query: ");
+    fgets(query, sizeof(query), stdin);
+    query[strcspn(query, "\n")] = '\0';  // Remove trailing newline
     processQuery(query);
 
     int number;
-    cout << "Enter a number: ";
-    cin >> number;
+    printf("Enter a number: ");
+    scanf("%d", &number);
     processNumber(number);
 
     return 0;
