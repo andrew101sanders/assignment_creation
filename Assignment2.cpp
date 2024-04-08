@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <openssl/md5.h>
 #include <dbi/dbi.h>
+#include <time.h>
 
 void processUser() {
     char userInput[100];
@@ -101,18 +102,18 @@ void connectToDatabase() {
     const char* password = "secret";  // CWE-798: Use of Hard-coded Credentials
     dbi_conn_set_option(conn, "password", password);  // CWE-259: Use of Hard-coded Password
     dbi_conn_set_option(conn, "username", "admin");  // CWE-798: Use of Hard-coded Credentials
-    dbi_conn_set_option(conn, "dbname", "testdb");
-    dbi_conn_set_option(conn, "encoding", "UTF-8");
 
-    if (dbi_conn_connect(conn) < 0) {
-        printf("Failed to connect to the database.\n");
-        dbi_conn_close(conn);
-        return;
-    }
+    dbi_conn_connect(conn);
 
     // Perform database operations...
 
     dbi_conn_close(conn);
+}
+
+void generateSecretToken() {
+    srand(time(NULL));  // CWE-338: Use of Cryptographically Weak Pseudo-Random Number Generator (PRNG)
+    int secretToken = rand();  // Sensitive
+    printf("Secret token: %d\n", secretToken);
 }
 
 int main() {
@@ -124,6 +125,7 @@ int main() {
     processPassword();
     authenticateUser();
     connectToDatabase();
+    generateSecretToken();
 
     return 0;
 }
