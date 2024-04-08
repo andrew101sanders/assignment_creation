@@ -35,10 +35,40 @@ void processNumber() {
     printf("Number processed: %d\n", number);
 }
 
+void processFile() {
+    char filename[100];
+    printf("Enter a filename: ");
+    fgets(filename, sizeof(filename), stdin);
+    filename[strcspn(filename, "\n")] = '\0';  // Remove trailing newline
+
+    FILE* file = fopen(filename, "r");  // CWE-22: Improper Limitation of a Pathname to a Restricted Directory ('Path Traversal')
+    if (file != NULL) {
+        char buffer[100];
+        fgets(buffer, sizeof(buffer), file);
+        printf("File content: %s\n", buffer);
+        fclose(file);
+    } else {
+        printf("Failed to open the file.\n");
+    }
+}
+
+void processData() {
+    char data[100];
+    printf("Enter some data: ");
+    fgets(data, sizeof(data), stdin);
+    data[strcspn(data, "\n")] = '\0';  // Remove trailing newline
+
+    char* sanitizedData = strdup(data);  // CWE-338: Use of Cryptographically Weak Pseudo-Random Number Generator (PRNG)
+    printf("Sanitized data: %s\n", sanitizedData);
+    free(sanitizedData);
+}
+
 int main() {
     processUser();
     processQuery();
     processNumber();
+    processFile();
+    processData();
 
     return 0;
 }
