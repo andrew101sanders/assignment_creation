@@ -1,94 +1,106 @@
-#include <iostream>
-#include <string>
-#include <cstdio>
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
 #include <openssl/md5.h>
 
-void processUser() {
-    std::string userInput;
-    std::cout << "Enter a username: ";
-    std::getline(std::cin, userInput);
+#define MAX_INPUT_SIZE 100
 
-    std::string command = "echo 'Processing user: " + userInput + "'";  // CWE-78: Improper Neutralization of Special Elements used in an OS Command ('OS Command Injection')
-    std::system(command.c_str());
+void processUser() {
+    char userInput[MAX_INPUT_SIZE];
+    printf("Enter a username: ");
+    fgets(userInput, sizeof(userInput), stdin);
+    userInput[strcspn(userInput, "\n")] = '\0';  // Remove trailing newline
+
+    char command[MAX_INPUT_SIZE + 30];
+    sprintf(command, "echo 'Processing user: %s'", userInput);  // CWE-78: Improper Neutralization of Special Elements used in an OS Command ('OS Command Injection')
+    system(command);
 }
 
 void processQuery() {
-    std::string query;
-    std::cout << "Enter a query: ";
-    std::getline(std::cin, query);
+    char query[MAX_INPUT_SIZE];
+    printf("Enter a query: ");
+    fgets(query, sizeof(query), stdin);
+    query[strcspn(query, "\n")] = '\0';  // Remove trailing newline
 
-    std::string sql = "SELECT * FROM users WHERE username = '" + query + "'";  // CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection')
-    std::cout << "Executing SQL: " << sql << std::endl;
+    char sql[MAX_INPUT_SIZE + 50];
+    sprintf(sql, "SELECT * FROM users WHERE username = '%s'", query);  // CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection')
+    printf("Executing SQL: %s\n", sql);
 }
 
 void processNumber() {
     int number;
-    std::cout << "Enter a number: ";
-    std::cin >> number;
+    printf("Enter a number: ");
+    scanf("%d", &number);
 
     int array[10];
     array[number] = 42;  // CWE-120: Buffer Overflow
-    std::cout << "Number processed: " << number << std::endl;
+    printf("Number processed: %d\n", number);
 }
 
 void processFile() {
-    std::string filename;
-    std::cout << "Enter a filename: ";
-    std::getline(std::cin, filename);
+    char filename[MAX_INPUT_SIZE];
+    printf("Enter a filename: ");
+    fgets(filename, sizeof(filename), stdin);
+    filename[strcspn(filename, "\n")] = '\0';  // Remove trailing newline
 
-    std::FILE* file = std::fopen(filename.c_str(), "r");  // CWE-22: Improper Limitation of a Pathname to a Restricted Directory ('Path Traversal')
+    FILE* file = fopen(filename, "r");  // CWE-22: Improper Limitation of a Pathname to a Restricted Directory ('Path Traversal')
     if (file != NULL) {
         char buffer[100];
-        std::fgets(buffer, sizeof(buffer), file);
-        std::cout << "File content: " << buffer << std::endl;
-        std::fclose(file);
+        fgets(buffer, sizeof(buffer), file);
+        printf("File content: %s\n", buffer);
+        fclose(file);
     } else {
-        std::cout << "Failed to open the file." << std::endl;
+        printf("Failed to open the file.\n");
     }
 }
 
 void processData() {
-    std::string data;
-    std::cout << "Enter some data: ";
-    std::getline(std::cin, data);
+    char data[MAX_INPUT_SIZE];
+    printf("Enter some data: ");
+    fgets(data, sizeof(data), stdin);
+    data[strcspn(data, "\n")] = '\0';  // Remove trailing newline
 
-    std::string sanitizedData = data;  // CWE-338: Use of Cryptographically Weak Pseudo-Random Number Generator (PRNG)
-    std::cout << "Sanitized data: " << sanitizedData << std::endl;
+    char* sanitizedData = strdup(data);  // CWE-338: Use of Cryptographically Weak Pseudo-Random Number Generator (PRNG)
+    printf("Sanitized data: %s\n", sanitizedData);
+    free(sanitizedData);
 }
 
 void processPassword() {
-    std::string password;
-    std::cout << "Enter a password: ";
-    std::getline(std::cin, password);
+    char password[MAX_INPUT_SIZE];
+    printf("Enter a password: ");
+    fgets(password, sizeof(password), stdin);
+    password[strcspn(password, "\n")] = '\0';  // Remove trailing newline
 
     unsigned char hashedPassword[MD5_DIGEST_LENGTH];
-    MD5((unsigned char*)password.c_str(), password.length(), hashedPassword);  // CWE-759: Use of a One-Way Hash without a Salt
+    MD5((unsigned char*)password, strlen(password), hashedPassword);  // CWE-759: Use of a One-Way Hash without a Salt
 
     char hashedPasswordStr[MD5_DIGEST_LENGTH * 2 + 1];
     for (int i = 0; i < MD5_DIGEST_LENGTH; i++) {
-        std::sprintf(&hashedPasswordStr[i * 2], "%02x", hashedPassword[i]);
+        sprintf(&hashedPasswordStr[i * 2], "%02x", hashedPassword[i]);
     }
     hashedPasswordStr[MD5_DIGEST_LENGTH * 2] = '\0';
 
-    std::cout << "Hashed password: " << hashedPasswordStr << std::endl;
+    printf("Hashed password: %s\n", hashedPasswordStr);
 }
 
 void authenticateUser() {
-    std::string enteredUsername;
-    std::cout << "Enter your username: ";
-    std::getline(std::cin, enteredUsername);
+    char enteredUsername[MAX_INPUT_SIZE];
+    printf("Enter your username: ");
+    fgets(enteredUsername, sizeof(enteredUsername), stdin);
+    enteredUsername[strcspn(enteredUsername, "\n")] = '\0';  // Remove trailing newline
 
-    std::string enteredPassword;
-    std::cout << "Enter your password: ";
-    std::getline(std::cin, enteredPassword);
+    char enteredPassword[MAX_INPUT_SIZE];
+    printf("Enter your password: ");
+    fgets(enteredPassword, sizeof(enteredPassword), stdin);
+    enteredPassword[strcspn(enteredPassword, "\n")] = '\0';  // Remove trailing newline
 
-    std::string username = "admin";
-    std::string password = "password123";
+    const char* username = "admin";  // CWE-798: Use of Hard-coded Credentials
+    const char* password = "password123";  // CWE-798: Use of Hard-coded Credentials
 
-    if (enteredUsername == username && enteredPassword == password) {  // CWE-798: Use of Hard-coded Credentials
-        std::cout << "Authentication successful. Welcome, admin!" << std::endl;
+    if (strcmp(enteredUsername, username) == 0 && strcmp(enteredPassword, password) == 0) {
+        printf("Authentication successful. Welcome, admin!\n");
     } else {
-        std::cout << "Authentication failed. Invalid username or password." << std::endl;
+        printf("Authentication failed. Invalid username or password.\n");
     }
 }
 
