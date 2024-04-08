@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include <openssl/md5.h>
 #include <dbi/dbi.h>
-#include <time.h>
+#include <random>
 
 void processUser() {
     char userInput[100];
@@ -111,7 +111,7 @@ void connectToDatabase() {
 }
 
 void generateSecretToken() {
-    int secretToken = rand();  // CWE-338: Use of Cryptographically Weak Pseudo-Random Number Generator (PRNG)
+    int secretToken = std::rand();  // CWE-338: Use of Cryptographically Weak Pseudo-Random Number Generator (PRNG)
     printf("Secret token: %d\n", secretToken);
 }
 
