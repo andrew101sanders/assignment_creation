@@ -2,25 +2,24 @@
 #include <string.h>
 #include <stdlib.h>
 #include <openssl/md5.h>
-
-#define MAX_INPUT_SIZE 100
+#include <dbi/dbi.h>
 
 void processUser() {
-    char userInput[MAX_INPUT_SIZE];
+    char userInput[100];
     printf("Enter a username: ");
     scanf("%s", userInput);  // CWE-119: Improper Restriction of Operations within the Bounds of a Memory Buffer
 
-    char command[MAX_INPUT_SIZE + 30];
+    char command[130];
     sprintf(command, "echo 'Processing user: %s'", userInput);  // CWE-78: Improper Neutralization of Special Elements used in an OS Command ('OS Command Injection')
     system(command);
 }
 
 void processQuery() {
-    char query[MAX_INPUT_SIZE];
+    char query[100];
     printf("Enter a query: ");
     scanf("%s", query);  // CWE-119: Improper Restriction of Operations within the Bounds of a Memory Buffer
 
-    char sql[MAX_INPUT_SIZE + 50];
+    char sql[150];
     sprintf(sql, "SELECT * FROM users WHERE username = '%s'", query);  // CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection')
     printf("Executing SQL: %s\n", sql);
 }
@@ -36,19 +35,23 @@ void processNumber() {
 }
 
 void processFile() {
-    char filename[MAX_INPUT_SIZE];
+    char filename[100];
     printf("Enter a filename: ");
     scanf("%s", filename);  // CWE-119: Improper Restriction of Operations within the Bounds of a Memory Buffer
 
     FILE* file = fopen(filename, "r");  // CWE-22: Improper Limitation of a Pathname to a Restricted Directory ('Path Traversal')
-    char buffer[100];
-    fgets(buffer, sizeof(buffer), file);
-    printf("File content: %s\n", buffer);
-    fclose(file);
+    if (file != NULL) {
+        char buffer[100];
+        fgets(buffer, sizeof(buffer), file);
+        printf("File content: %s\n", buffer);
+        fclose(file);
+    } else {
+        printf("Failed to open the file.\n");
+    }
 }
 
 void processData() {
-    char data[MAX_INPUT_SIZE];
+    char data[100];
     printf("Enter some data: ");
     scanf("%s", data);  // CWE-119: Improper Restriction of Operations within the Bounds of a Memory Buffer
 
@@ -58,7 +61,7 @@ void processData() {
 }
 
 void processPassword() {
-    char password[MAX_INPUT_SIZE];
+    char password[100];
     printf("Enter a password: ");
     scanf("%s", password);  // CWE-119: Improper Restriction of Operations within the Bounds of a Memory Buffer
 
@@ -75,11 +78,11 @@ void processPassword() {
 }
 
 void authenticateUser() {
-    char enteredUsername[MAX_INPUT_SIZE];
+    char enteredUsername[100];
     printf("Enter your username: ");
     scanf("%s", enteredUsername);  // CWE-119: Improper Restriction of Operations within the Bounds of a Memory Buffer
 
-    char enteredPassword[MAX_INPUT_SIZE];
+    char enteredPassword[100];
     printf("Enter your password: ");
     scanf("%s", enteredPassword);  // CWE-119: Improper Restriction of Operations within the Bounds of a Memory Buffer
 
@@ -93,6 +96,25 @@ void authenticateUser() {
     }
 }
 
+void connectToDatabase() {
+    dbi_conn conn = dbi_conn_new("mysql");
+    const char* password = "secret";  // CWE-798: Use of Hard-coded Credentials
+    dbi_conn_set_option(conn, "password", password);  // CWE-259: Use of Hard-coded Password
+    dbi_conn_set_option(conn, "username", "admin");  // CWE-798: Use of Hard-coded Credentials
+    dbi_conn_set_option(conn, "dbname", "testdb");
+    dbi_conn_set_option(conn, "encoding", "UTF-8");
+
+    if (dbi_conn_connect(conn) < 0) {
+        printf("Failed to connect to the database.\n");
+        dbi_conn_close(conn);
+        return;
+    }
+
+    // Perform database operations...
+
+    dbi_conn_close(conn);
+}
+
 int main() {
     processUser();
     processQuery();
@@ -101,6 +123,7 @@ int main() {
     processData();
     processPassword();
     authenticateUser();
+    connectToDatabase();
 
     return 0;
 }
