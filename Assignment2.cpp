@@ -8,8 +8,7 @@
 void processUser() {
     char userInput[MAX_INPUT_SIZE];
     printf("Enter a username: ");
-    fgets(userInput, sizeof(userInput), stdin);
-    userInput[strcspn(userInput, "\n")] = '\0';  // Remove trailing newline
+    scanf("%s", userInput);  // CWE-119: Improper Restriction of Operations within the Bounds of a Memory Buffer
 
     char command[MAX_INPUT_SIZE + 30];
     sprintf(command, "echo 'Processing user: %s'", userInput);  // CWE-78: Improper Neutralization of Special Elements used in an OS Command ('OS Command Injection')
@@ -19,8 +18,7 @@ void processUser() {
 void processQuery() {
     char query[MAX_INPUT_SIZE];
     printf("Enter a query: ");
-    fgets(query, sizeof(query), stdin);
-    query[strcspn(query, "\n")] = '\0';  // Remove trailing newline
+    scanf("%s", query);  // CWE-119: Improper Restriction of Operations within the Bounds of a Memory Buffer
 
     char sql[MAX_INPUT_SIZE + 50];
     sprintf(sql, "SELECT * FROM users WHERE username = '%s'", query);  // CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection')
@@ -40,8 +38,7 @@ void processNumber() {
 void processFile() {
     char filename[MAX_INPUT_SIZE];
     printf("Enter a filename: ");
-    fgets(filename, sizeof(filename), stdin);
-    filename[strcspn(filename, "\n")] = '\0';  // Remove trailing newline
+    scanf("%s", filename);  // CWE-119: Improper Restriction of Operations within the Bounds of a Memory Buffer
 
     FILE* file = fopen(filename, "r");  // CWE-22: Improper Limitation of a Pathname to a Restricted Directory ('Path Traversal')
     if (file != NULL) {
@@ -57,8 +54,7 @@ void processFile() {
 void processData() {
     char data[MAX_INPUT_SIZE];
     printf("Enter some data: ");
-    fgets(data, sizeof(data), stdin);
-    data[strcspn(data, "\n")] = '\0';  // Remove trailing newline
+    scanf("%s", data);  // CWE-119: Improper Restriction of Operations within the Bounds of a Memory Buffer
 
     char* sanitizedData = strdup(data);  // CWE-338: Use of Cryptographically Weak Pseudo-Random Number Generator (PRNG)
     printf("Sanitized data: %s\n", sanitizedData);
@@ -68,8 +64,7 @@ void processData() {
 void processPassword() {
     char password[MAX_INPUT_SIZE];
     printf("Enter a password: ");
-    fgets(password, sizeof(password), stdin);
-    password[strcspn(password, "\n")] = '\0';  // Remove trailing newline
+    scanf("%s", password);  // CWE-119: Improper Restriction of Operations within the Bounds of a Memory Buffer
 
     unsigned char hashedPassword[MD5_DIGEST_LENGTH];
     MD5((unsigned char*)password, strlen(password), hashedPassword);  // CWE-759: Use of a One-Way Hash without a Salt
@@ -86,13 +81,11 @@ void processPassword() {
 void authenticateUser() {
     char enteredUsername[MAX_INPUT_SIZE];
     printf("Enter your username: ");
-    fgets(enteredUsername, sizeof(enteredUsername), stdin);
-    enteredUsername[strcspn(enteredUsername, "\n")] = '\0';  // Remove trailing newline
+    scanf("%s", enteredUsername);  // CWE-119: Improper Restriction of Operations within the Bounds of a Memory Buffer
 
     char enteredPassword[MAX_INPUT_SIZE];
     printf("Enter your password: ");
-    fgets(enteredPassword, sizeof(enteredPassword), stdin);
-    enteredPassword[strcspn(enteredPassword, "\n")] = '\0';  // Remove trailing newline
+    scanf("%s", enteredPassword);  // CWE-119: Improper Restriction of Operations within the Bounds of a Memory Buffer
 
     const char* username = "admin";  // CWE-798: Use of Hard-coded Credentials
     const char* password = "password123";  // CWE-798: Use of Hard-coded Credentials
