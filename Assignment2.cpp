@@ -51,16 +51,6 @@ void processFile() {
     }
 }
 
-void processData() {
-    char data[100];
-    printf("Enter some data: ");
-    scanf("%s", data);  // CWE-119: Improper Restriction of Operations within the Bounds of a Memory Buffer
-
-    char* sanitizedData = strdup(data);  // CWE-338: Use of Cryptographically Weak Pseudo-Random Number Generator (PRNG)
-    printf("Sanitized data: %s\n", sanitizedData);
-    free(sanitizedData);
-}
-
 void processPassword() {
     char password[100];
     printf("Enter a password: ");
@@ -78,25 +68,6 @@ void processPassword() {
     printf("Hashed password: %s\n", hashedPasswordStr);
 }
 
-void authenticateUser() {
-    char enteredUsername[100];
-    printf("Enter your username: ");
-    scanf("%s", enteredUsername);  // CWE-119: Improper Restriction of Operations within the Bounds of a Memory Buffer
-
-    char enteredPassword[100];
-    printf("Enter your password: ");
-    scanf("%s", enteredPassword);  // CWE-119: Improper Restriction of Operations within the Bounds of a Memory Buffer
-
-    const char* username = "admin";  // CWE-798: Use of Hard-coded Credentials
-    const char* password = "password123";  // CWE-798: Use of Hard-coded Credentials
-
-    if (strcmp(enteredUsername, username) == 0 && strcmp(enteredPassword, password) == 0) {
-        printf("Authentication successful. Welcome, admin!\n");
-    } else {
-        printf("Authentication failed. Invalid username or password.\n");
-    }
-}
-
 void connectToDatabase() {
     dbi_conn conn = dbi_conn_new("mysql");
     const char* password = "secret";  // CWE-798: Use of Hard-coded Credentials
@@ -105,7 +76,7 @@ void connectToDatabase() {
 
     dbi_conn_connect(conn);
 
-    // Perform database operations...
+    // Pretend that some database operations are occuring here
 
     dbi_conn_close(conn);
 }
@@ -115,16 +86,28 @@ void generateSecretToken() {
     printf("Secret token: %d\n", secretToken);
 }
 
+void processMessage(const char* message) {
+    char* copy = (char*)malloc((strlen(message) + 1) * sizeof(char));
+    strcpy(copy, message);
+
+    if (strlen(copy) > 10) {
+        printf("Long message received: %s\n", copy);
+        free(copy);
+    }
+
+    printf("Processing message: %s\n", copy);
+    free(copy);  // CWE-415: Double Free
+}
+
 int main() {
     processUser();
     processQuery();
     processNumber();
     processFile();
-    processData();
     processPassword();
-    authenticateUser();
     connectToDatabase();
     generateSecretToken();
+    processMessage("Hello, World!");
 
     return 0;
 }
