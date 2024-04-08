@@ -111,8 +111,7 @@ void connectToDatabase() {
 }
 
 void generateSecretToken() {
-    srand(time(NULL));  // CWE-338: Use of Cryptographically Weak Pseudo-Random Number Generator (PRNG)
-    int secretToken = rand();  // Sensitive
+    int secretToken = rand();  // CWE-338: Use of Cryptographically Weak Pseudo-Random Number Generator (PRNG)
     printf("Secret token: %d\n", secretToken);
 }
 
