@@ -41,14 +41,10 @@ void processFile() {
     scanf("%s", filename);  // CWE-119: Improper Restriction of Operations within the Bounds of a Memory Buffer
 
     FILE* file = fopen(filename, "r");  // CWE-22: Improper Limitation of a Pathname to a Restricted Directory ('Path Traversal')
-    if (file != NULL) {
-        char buffer[100];
-        fgets(buffer, sizeof(buffer), file);
-        printf("File content: %s\n", buffer);
-        fclose(file);
-    } else {
-        printf("Failed to open the file.\n");
-    }
+    char buffer[100];
+    fgets(buffer, sizeof(buffer), file);
+    printf("File content: %s\n", buffer);
+    fclose(file);
 }
 
 void processData() {
