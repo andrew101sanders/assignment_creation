@@ -8,10 +8,6 @@ void processUser() {
     printf("Enter a username: ");
     scanf("%s", userInput);
     // CWE-119: Improper Restriction of Operations within the Bounds of a Memory Buffer
-    char command[130];
-    sprintf(command, "echo 'Processing user: %s'", userInput);
-    // CWE-78: Improper Neutralization of Special Elements used in an OS Command ('OS Command Injection')
-    system(command);
 }
 
 void processNumber() {
@@ -31,25 +27,11 @@ void processFile() {
     // CWE-119: Improper Restriction of Operations within the Bounds of a Memory Buffer
     FILE* file = fopen(filename, "r");
     // CWE-22: Improper Limitation of a Pathname to a Restricted Directory ('Path Traversal')
-    if (file != NULL) {
-        char buffer[100];
-        fgets(buffer, sizeof(buffer), file);
-        printf("File content: %s\n", buffer);
-        fclose(file);
-    } else {
-        printf("Failed to open the file.\n");
-    }
-}
+    char buffer[100];
+    fgets(buffer, sizeof(buffer), file);
+    printf("File content: %s\n", buffer);
+    fclose(file);
 
-void processPassword() {
-    char password[100];
-    printf("Enter a password: ");
-    scanf("%s", password);
-    // CWE-119: Improper Restriction of Operations within the Bounds of a Memory Buffer
-    std::hash<std::string> hasher; //MD5
-    size_t hashedPassword = hasher(password);
-    // CWE-759: Use of a One-Way Hash without a Salt
-    printf("Hashed password: %zu\n", hashedPassword);
 }
 
 // Hint: There are multiple ways to solve this. Consider the following links:
@@ -95,7 +77,6 @@ int main() {
     processUser();
     processNumber();
     processFile();
-    processPassword();
     connectToDatabase();
     generateSecretToken();
     processMessage("Hello, World!");
