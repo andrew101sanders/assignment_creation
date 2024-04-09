@@ -14,17 +14,6 @@ void processUser() {
     system(command);
 }
 
-void processQuery() {
-    char query[100];
-    printf("Enter a query: ");
-    scanf("%s", query);
-    // CWE-119: Improper Restriction of Operations within the Bounds of a Memory Buffer
-    char sql[150];
-    sprintf(sql, "SELECT * FROM users WHERE username = '%s'", query);
-    // CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection')
-    printf("Executing SQL: %s\n", sql);
-}
-
 void processNumber() {
     int number;
     printf("Enter a number: ");
@@ -65,16 +54,12 @@ void processPassword() {
 
 void connectToDatabase() {
     const char* hardcodedUsername = "admin";
-    const char* hardcodedPassword = "secret";
-    // CWE-798: Use of Hard-coded Credentials
+    const char* hardcodedPassword = std::getenv("assignment_password");
+    // CWE - CWE-798 - Use of Hard-coded Credentials
+    // CWE - CWE-259 - Use of Hard-coded Password
 
     // Simulating a database connection
-    printf("Connecting to the database...\n");
-    printf("Using username: %s\n", hardcodedUsername);
-    printf("Using password: %s\n", hardcodedPassword);
-
-    // Simulating database operations
-    printf("Connected to the database. Performing operations...\n");
+    printf("Connecting to the database using username and password...\n");
 
     // Simulating database connection close
     printf("Closing the database connection.\n");
@@ -100,7 +85,6 @@ void processMessage(const char* message) {
 
 int main() {
     processUser();
-    processQuery();
     processNumber();
     processFile();
     processPassword();
