@@ -6,8 +6,9 @@
 void processUser() {
     char userInput[100];
     printf("Enter a username: ");
+
+    //CWE-120 - Buffer Copy without Checking Size of Input ('Classic Buffer Overflow')
     scanf("%s", userInput);
-    // CWE-119: Improper Restriction of Operations within the Bounds of a Memory Buffer
 }
 
 void processNumber() {
@@ -23,10 +24,10 @@ void processNumber() {
 void processFile() {
     char filename[100];
     printf("Enter a filename: ");
+
+    //CWE-120 - Buffer Copy without Checking Size of Input ('Classic Buffer Overflow')
     scanf("%s", filename);
-    // CWE-119: Improper Restriction of Operations within the Bounds of a Memory Buffer
     FILE* file = fopen(filename, "r");
-    // CWE-22: Improper Limitation of a Pathname to a Restricted Directory ('Path Traversal')
     char buffer[100];
     fgets(buffer, sizeof(buffer), file);
     printf("File content: %s\n", buffer);
@@ -39,9 +40,10 @@ void processFile() {
 // https://stackoverflow.com/a/54662065 
 void connectToDatabase() {
     const char* hardcodedUsername = "admin";
-    const char* hardcodedPassword = "secret";
+
     // CWE - CWE-798 - Use of Hard-coded Credentials
     // CWE - CWE-259 - Use of Hard-coded Password
+    const char* hardcodedPassword = "secret";
 
     // Simulating a database connection
     printf("Connecting to the database using username and password...\n");
@@ -56,21 +58,29 @@ void connectToDatabase() {
 }
 
 void generateSecretToken() {
-    int secretToken = std::rand();
     // CWE-338: Use of Cryptographically Weak Pseudo-Random Number Generator (PRNG)
+    int secretToken = std::rand();
     printf("Secret token: %d\n", secretToken);
 }
 
 void processMessage(const char* message) {
-    char* copy = (char*)malloc((strlen(message) + 1) * sizeof(char));
+
+    // CWE-120 - Buffer Copy without Checking Size of Input ('Classic Buffer Overflow')
+    char* copy = (char*)malloc((strlen(message) + 1) );
+
+    // CWE-120 - Buffer Copy without Checking Size of Input ('Classic Buffer Overflow')
     strcpy(copy, message);
+
+    // CWE-120 - Buffer Copy without Checking Size of Input ('Classic Buffer Overflow')
     if (strlen(copy) > 10) {
         printf("Long message received: %s\n", copy);
         free(copy);
     }
     printf("Processing message: %s\n", copy);
-    free(copy);
+
     // CWE-415: Double Free
+    free(copy);
+
 }
 
 int main() {
