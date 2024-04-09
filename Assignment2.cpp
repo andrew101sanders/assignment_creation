@@ -9,11 +9,15 @@ void processUser() {
 
     //CWE-120 - Buffer Copy without Checking Size of Input ('Classic Buffer Overflow')
     scanf("%s", userInput);
+
+    printf("Username entered: %s\n", userInput);
 }
 
 void processNumber() {
     int number;
     printf("Enter a number: ");
+
+    // Assume a number is entered.
     scanf("%d", &number);
     int array[10];
 
