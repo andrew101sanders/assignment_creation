@@ -46,20 +46,28 @@ void processPassword() {
     printf("Enter a password: ");
     scanf("%s", password);
     // CWE-119: Improper Restriction of Operations within the Bounds of a Memory Buffer
-    std::hash<std::string> hasher;
+    std::hash<std::string> hasher; //MD5
     size_t hashedPassword = hasher(password);
     // CWE-759: Use of a One-Way Hash without a Salt
     printf("Hashed password: %zu\n", hashedPassword);
 }
 
+// Hint: There are multiple ways to solve this. Consider the following links:
+// https://en.cppreference.com/w/cpp/utility/program/getenv
+// https://stackoverflow.com/a/54662065 
 void connectToDatabase() {
     const char* hardcodedUsername = "admin";
-    const char* hardcodedPassword = std::getenv("assignment_password");
+    const char* hardcodedPassword = "secret";
     // CWE - CWE-798 - Use of Hard-coded Credentials
     // CWE - CWE-259 - Use of Hard-coded Password
 
     // Simulating a database connection
     printf("Connecting to the database using username and password...\n");
+    printf("Using username: %s\n", hardcodedUsername); // This is fine for the purpose of the assignment.
+    printf("Using password: %s\n", hardcodedPassword); // This is fine for the purpose of the assignment.
+
+    // Simulating database operations
+    printf("Connected to the database. Performing operations...\n");
 
     // Simulating database connection close
     printf("Closing the database connection.\n");
