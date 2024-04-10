@@ -143,12 +143,11 @@ void processAndCopyMessage() {
 }
 
 int main() {
-        processAndCopyMessage();
     processUser();
     processNumber();
     processFile();
     connectToDatabase();
     generateSecretToken();
-
+    processAndCopyMessage();
     return 0;
 }
